@@ -1,33 +1,78 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Birthday Countdown | Adityacprtm</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="https://adityacprtm.com/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="https://adityacprtm.com/favicon-16x16.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Birthday Countdown | Adityacprtm</title>
-	<link rel="icon" type="image/png" sizes="32x32" href="https://adityacprtm.com/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="https://adityacprtm.com/favicon-16x16.png">
-	<link rel="stylesheet" href="style.css">
-</head>
+  <body>
+    <div id="app">
+      <div class="wrapper">
 
-<body>
-	<div id="app">
-		<h1>{{title}}</h1>
-		<ul>
-			<li><span>{{days}}</span>days</li>
-			<li><span>{{hours}}</span>hours</li>
-			<li><span>{{minutes}}</span>minutes</li>
-			<li><span>{{seconds}}</span>seconds</li>
-		</ul>
-		<small>UTC Timezone: {{utcDate}} UTC</small>
-		<br>
-		<small>Aditya's Timezone: {{myDate}} UTC+7</small>
-		<br>
-		<small>Your Browser Timezone: {{yourDate}}</small>
-	</div>
+        <div class="header">
+          <span class="overline">Counting down to</span>
+          <h1>Aditya's Birthday</h1>
+          <p class="target-date">{{targetDate}} &middot; {{targetWeekday}}</p>
+        </div>
 
-	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
-	<script src="app.js"></script>
-</body>
+        <div class="countdown-grid">
+          <div class="countdown-block">
+            <span class="number">{{days}}</span>
+            <span class="label">Days</span>
+          </div>
+          <div class="countdown-block">
+            <span class="number">{{hours}}</span>
+            <span class="label">Hours</span>
+          </div>
+          <div class="countdown-block">
+            <span class="number">{{minutes}}</span>
+            <span class="label">Minutes</span>
+          </div>
+          <div class="countdown-block">
+            <span class="number">{{seconds}}</span>
+            <span class="label">Seconds</span>
+          </div>
+        </div>
 
+        <div class="progress-wrap">
+          <div class="progress-meta">
+            <span class="progress-label">Year progress</span>
+            <span class="progress-pct">{{yearProgress}}%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" :style="{ width: yearProgress + '%' }"></div>
+            <div class="progress-marker" :style="{ left: yearProgress + '%' }"></div>
+          </div>
+        </div>
+
+        <div class="timezone-info">
+          <div class="tz-item">
+            <span class="tz-label">UTC</span>
+            <span class="tz-value">{{utcDate}}</span>
+          </div>
+          <div class="tz-divider"></div>
+          <div class="tz-item">
+            <span class="tz-label">Jakarta <span class="tz-offset">+7</span></span>
+            <span class="tz-value">{{myDate}}</span>
+          </div>
+          <div class="tz-divider"></div>
+          <div class="tz-item">
+            <span class="tz-label">Your timezone</span>
+            <span class="tz-value">{{yourDate}}</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script src="app.js"></script>
+  </body>
 </html>

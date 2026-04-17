@@ -1,51 +1,83 @@
-var app = new Vue({
-   el: "#app",
-   data: {
-      title: "Aditya's Birthday in:",
-      utcDate: "",
-      myDate: "",
-      yourDate: "",
-      bod: "",
-      days: "",
-      hours: "",
-      minutes: "",
-      seconds: "",
-   },
-   methods: {
-      countdown: function () {
-         const second = 1000;
-         const minute = second * 60;
-         const hour = minute * 60;
-         const day = hour * 24;
+const BIRTHDAY_MONTH = 6; // June (1-based)
+const BIRTHDAY_DAY = 21;
+const JAKARTA_TZ = "Asia/Jakarta";
 
-         let date = new Date();
-         this.utcDate = date.toLocaleString("en-US", {
-            timeZone: "Etc/UTC",
-         });
-         this.myDate = date.toLocaleString("en-US", {
-            timeZone: "Asia/Jakarta",
-         });
-         this.yourDate = date.toLocaleString();
+const MS_SEC  = 1000;
+const MS_MIN  = MS_SEC * 60;
+const MS_HOUR = MS_MIN * 60;
+const MS_DAY  = MS_HOUR * 24;
 
-         let that = this;
-         let current = date.getTime();
-         let thisYear = date.getFullYear();
-         let bod = new Date("21 Juni " + thisYear).getTime();
-         let year = (bod - current) / day < 0 ? thisYear + 1 : thisYear;
-         let countDown = new Date("21 Juni " + year).getTime();
+function nextBirthday() {
+  const now = new Date();
+  const candidate = new Date(now.getFullYear(), BIRTHDAY_MONTH - 1, BIRTHDAY_DAY);
+  if (candidate <= now) candidate.setFullYear(candidate.getFullYear() + 1);
+  return candidate;
+}
 
-         setInterval(function () {
-            let now = new Date().getTime();
-            let distance = countDown - now;
+function pad(n) {
+  return String(n).padStart(2, "0");
+}
 
-            that.days = Math.floor(distance / day);
-            that.hours = Math.floor((distance % day) / hour);
-            that.minutes = Math.floor((distance % hour) / minute);
-            that.seconds = Math.floor((distance % minute) / second);
-         }, second);
-      },
-   },
-   beforeMount() {
-      this.countdown();
-   },
+function yearProgressPercent(now) {
+  const start = new Date(now.getFullYear(), 0, 1);
+  const end   = new Date(now.getFullYear() + 1, 0, 1);
+  return ((now - start) / (end - start) * 100).toFixed(1);
+}
+
+const app = new Vue({
+  el: "#app",
+
+  data: {
+    days: "00",
+    hours: "00",
+    minutes: "00",
+    seconds: "00",
+    utcDate: "",
+    myDate: "",
+    yourDate: "",
+    yearProgress: 0,
+  },
+
+  computed: {
+    target() {
+      return nextBirthday();
+    },
+    targetDate() {
+      return this.target.toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      });
+    },
+    targetWeekday() {
+      return this.target.toLocaleDateString("en-US", { weekday: "long" });
+    },
+  },
+
+  mounted() {
+    this.tick();
+    this._timer = setInterval(() => this.tick(), 1000);
+  },
+
+  beforeDestroy() {
+    clearInterval(this._timer);
+  },
+
+  methods: {
+    tick() {
+      const now = new Date();
+      const distance = this.target - now;
+
+      this.days    = String(Math.floor(distance / MS_DAY));
+      this.hours   = pad(Math.floor((distance % MS_DAY)  / MS_HOUR));
+      this.minutes = pad(Math.floor((distance % MS_HOUR) / MS_MIN));
+      this.seconds = pad(Math.floor((distance % MS_MIN)  / MS_SEC));
+
+      this.yearProgress = yearProgressPercent(now);
+
+      this.utcDate  = now.toLocaleString("en-US", { timeZone: "Etc/UTC" });
+      this.myDate   = now.toLocaleString("en-US", { timeZone: JAKARTA_TZ });
+      this.yourDate = now.toLocaleString();
+    },
+  },
 });
